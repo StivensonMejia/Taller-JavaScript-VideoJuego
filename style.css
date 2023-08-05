@@ -13,7 +13,7 @@ body {
     width:100vw
 }
 canvas {
-    border:8px double rgb(34, 47, 92);
+    /* border:8px double rgb(34, 47, 92); */
     background-color:#437eb9;
 }
 .btns {
