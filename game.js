@@ -9,6 +9,8 @@ const btnDown = document.querySelector('#down');
 
 let canvasSize;
 let elementsSize;
+let level = 0;
+let lives = 3;
 
 const playerPosition = {
     x: undefined,
@@ -19,6 +21,8 @@ const giftPosition = {
     x: undefined,
     y: undefined,
 }
+
+let enemyPositions = [];
 
 window.addEventListener('load', setCanvasSize);
 window.addEventListener('resize', setCanvasSize);
@@ -43,10 +47,17 @@ function startGame() {
     game.font = elementsSize + 'px Verdana';
     game.textAlign = 'center';
 
-    const map = maps[0];
+    const map = maps[level];
+
+    if (!map) {
+        gameWin();
+        return;
+    }
+
     const mapRows = map.trim().split('\n');
     const mapRowCols = mapRows.map(row => row.trim().split(''));
     
+    enemyPositions = [];
     game.clearRect(0,0,canvasSize, canvasSize);
     mapRowCols.forEach((row, rowI) => {
         row.forEach((col, colI) => {
@@ -62,6 +73,11 @@ function startGame() {
         } else if (col == 'I') {
             giftPosition.x = posX;
             giftPosition.y = posY;
+        } else if (col == 'X') {
+            enemyPositions.push({
+                x: posX,
+                y: posY,
+            });
         }
         
         game.fillText(emoji, posX, posY);
@@ -77,13 +93,50 @@ function movePlayer() {
     const gifColisionY = playerPosition.y.toFixed(3) == giftPosition.y.toFixed(3);
     const gifColision = gifColisionX && gifColisionY;
 
+
     if (gifColision) {
-        console.log('pasas de LVL');
+        levelWin();
+    }
+
+    const enemyColisions = enemyPositions.find(enemy => {
+        const enemyColisionX = enemy.x.toFixed(3) == playerPosition.x.toFixed(3);
+        const enemyColisionY = enemy.y.toFixed(3) == playerPosition.y.toFixed(3);
+
+        return enemyColisionX && enemyColisionY;
+    });
+
+    if (enemyColisions) {
+        levelFail();
     }
 
   game.fillText(emojis['PLAYER'], playerPosition.x, playerPosition.y);
 
 
+}
+
+function levelWin() {
+    console.log('subiste de nivel');
+    level++;
+    startGame();
+}
+
+function gameWin() {
+    console.log('terminaste el juego');
+}
+
+function levelFail() {
+
+    lives--;
+    console.log(lives);
+
+    if (lives <= 0) {
+        level = 0;
+        lives = 3;
+    }
+
+    playerPosition.x = undefined;
+    playerPosition.y = undefined;
+    startGame();
 }
 
 window.addEventListener('keydown', moveByKeys);
