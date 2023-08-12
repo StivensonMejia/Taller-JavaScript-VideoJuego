@@ -7,11 +7,18 @@ const btnLeft = document.querySelector('#left');
 const btnRight = document.querySelector('#right');
 const btnDown = document.querySelector('#down');
 const spanLives = document.querySelector('#lives');
+const spanTime = document.querySelector('#time');
+const spanRecord = document.querySelector('#record');
 
 let canvasSize;
 let elementsSize;
 let level = 0;
 let lives = 3;
+
+let timeStart;
+let timePlayer;
+let timeInterval;
+localStorage.getItem('record',0);
 
 const playerPosition = {
     x: undefined,
@@ -55,10 +62,16 @@ function startGame() {
         return;
     }
 
+    if (!timeStart) {
+        timeStart = Date.now();
+        timeInterval = setInterval(showTime, 100);
+    }
+
     const mapRows = map.trim().split('\n');
     const mapRowCols = mapRows.map(row => row.trim().split(''));
     
     showLives();
+    ancientRecord();
 
     enemyPositions = [];
     game.clearRect(0,0,canvasSize, canvasSize);
@@ -125,6 +138,8 @@ function levelWin() {
 
 function gameWin() {
     console.log('terminaste el juego');
+    clearInterval(timeInterval)
+    showRecord();
 }
 
 function levelFail() {
@@ -135,6 +150,7 @@ function levelFail() {
     if (lives <= 0) {
         level = 0;
         lives = 3;
+        timeStart = undefined;
     }
 
     playerPosition.x = undefined;
@@ -144,6 +160,30 @@ function levelFail() {
 
 function showLives() {
     spanLives.innerHTML = emojis["HEART"].repeat(lives)
+}
+
+function showTime () {
+    timePlayer = Date.now() - timeStart;
+    spanTime.innerHTML = timePlayer;
+}
+
+function showRecord() {
+    if (!localStorage.getItem('record') || (localStorage.getItem('record') > timePlayer)) {
+
+        localStorage.setItem('record', timePlayer);
+        spanRecord.innerHTML = localStorage.getItem('record');
+
+    } else if (localStorage.getItem('record') < timePlayer) {
+
+        spanRecord.innerHTML = localStorage.setItem('record');
+
+    }
+
+}
+function ancientRecord() {
+    if (record) {
+        spanRecord.innerHTML = localStorage.getItem('record');
+    }
 }
 
 window.addEventListener('keydown', moveByKeys);
