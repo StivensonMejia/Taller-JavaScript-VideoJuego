@@ -6,15 +6,16 @@ body {
 }
 .gameContainer {
     display:flex;
-    align-items:center;
-    justify-content:center;
+    margin: 2% 0;
+    place-content:center;
+    place-items: center;
     flex-wrap:wrap;
-    height:100vh;
-    width:100vw
+    height:auto;
+    width: 100%;
 }
 canvas {
-    /* border:8px double rgb(34, 47, 92); */
-    background-color:#437eb9;
+    border:8px double #edd400;
+    background-color:#2e2e2e;
 }
 .btns {
     display:flex;
@@ -24,11 +25,11 @@ canvas {
     width:100%
 }
 button {
-    background-color:#63ce6a;
+    background-color:#edd400;
     border-radius:4px;
     border: none;
     font-family:inherit;
-    margin:0;
+    margin:20px 0;
     padding:10px 20px;
     width:100px
 }
@@ -50,7 +51,7 @@ p {
 
 @media(max-width:440px) {
     button {
-        margin-top:25px
+        margin: 5px;
     }
     #up,#down {
         margin-left:100%;
